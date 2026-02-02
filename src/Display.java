@@ -4,11 +4,14 @@ import processing.core.PImage;
 
 public class Display extends PApplet {
     public static PApplet sketch;
-    public int tickSpeed;
-    public Environment env;
-    public UI ui;
-    public int frame;
+    public static int tickSpeed, genTime;
+    public static Environment env;
+    public static UI ui;
+    public static int frame;
     public static void main(String[] args) {
+        tickSpeed = 1;
+        genTime = 50;
+        env = new Environment(80, 60);
         PApplet.main("Display");
     }
 
@@ -20,6 +23,7 @@ public class Display extends PApplet {
 
     @Override
     public void setup() {
+        sketch = this;
         background(255);
     }
 
@@ -29,6 +33,9 @@ public class Display extends PApplet {
         frame++;
         if (frame % tickSpeed == 0 && env != null) {
             env.update();
+            if (frame % (tickSpeed * genTime) == 0) {
+                env.nextGeneration();
+            }
         }
         if (env != null) {
             env.display();
