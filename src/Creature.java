@@ -53,7 +53,7 @@ public class Creature implements Comparable<Creature> {
 
     public void display() {
         Display.sketch.fill(0, 0, 0);
-        Display.sketch.ellipse(x * 10 + 5, y * 10 + 5, 4, 4);
+        Display.sketch.ellipse(x * Display.sketch.width/204 + Display.sketch.width/204/2, y * Display.sketch.height/115 + Display.sketch.height/115/2, Display.sketch.width/204*4/5, Display.sketch.height/115*4/5);
     }
 
     public void mutate() {
@@ -72,6 +72,10 @@ public class Creature implements Comparable<Creature> {
             System.arraycopy(original.aiParrameters[i], 0, newAIParams[i], 0, original.aiParrameters[i].length);
         }
         return new Creature(original.speed, newAIParams, original.energy, original.x, original.y, original.width, original.height);
+    }
+
+    public void resetEnergy() {
+        energy = 0;
     }
 
     public int compareTo(Creature other) {
