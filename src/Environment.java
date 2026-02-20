@@ -10,6 +10,7 @@ public class Environment {
     public Environment(int width, int height) {
         tiles = new int[width][height];
         Random rand = new Random();
+        // Create random environment
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 float r = rand.nextFloat();
@@ -28,6 +29,7 @@ public class Environment {
         tick = 0;
         creatures = new ArrayList<Creature>();
         colors = new int[][] {{0, 0, 255}, {0, 255, 0}, {255, 0, 0}};
+        // Place initial creatures
         for (int i = 0; i < 300; i++) {
             float[][] aiParams = new float[4][4];
             for (int j = 0; j < 4; j++) {

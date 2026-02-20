@@ -25,6 +25,7 @@ public class Display extends PApplet {
     public void setup() {
         sketch = this;
         background(255);
+        // surface.setResizable(true);
     }
 
     @Override
