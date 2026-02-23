@@ -5,5 +5,9 @@ This project is a evolution simulation, with a tile-based map. Creatures, repres
 - Basic Functionality
 - UI and settings
 
+# Mockup
+
+![Mockup](https://github.com/Jonwu25/AdvProgrammingIndvProject/blob/main/images/mockup.png?raw=true)
+
 # UML
 ![UML](https://github.com/Jonwu25/AdvProgrammingIndvProject/blob/main/images/UML.png?raw=true)
