@@ -1,16 +1,47 @@
-import java.util.ArrayList;
+import java.util.*;
+import java.lang.reflect.Method;
 
 public class Creature implements Comparable<Creature> {
     float speed;
-    float[][] aiParrameters;
+    float[][][] parameters;
+    float[][] weight;
+    int[][] inputs; // {(x, y), ...}
+    int[][] outputs; // {(x, y), ...}
+    Method[] methods;
     float energy;
     int x, y;
     int width, height;
     int startX, startY;
+    int[] numLayers;
 
-    public Creature(float speed, float[][] aiParrameters, float energy, int x, int y, int width, int height) {
+    public Creature(float speed, int[] numLayers, int[][] in, int[][] out, float energy, int x, int y, int width, int height) {
         this.speed = speed;
-        this.aiParrameters = aiParrameters;
+        // Randomly initialize parameters and weights
+        // First array in parameters has dimensions (input dimension) x numLayers[0]
+        // First array in weight has dimension numlayers[0]
+        Random rand = new Random();
+        inputs = in;
+        outputs = out;
+        parameters = new float[numLayers.length][][];
+        weight = new float[numLayers.length][];
+        for (int i = 0; i < numLayers.length; i++) {
+            if (i == 0) {
+                parameters[i] = new float[inputs.length][numLayers[i]];
+            } else {
+                parameters[i] = new float[numLayers[i-1]][numLayers[i]];
+            }
+            weight[i] = new float[numLayers[i]];
+        }
+        for (int i = 0; i < numLayers.length; i++) {
+            for (int j = 0; j < parameters[i].length; j++) {
+                for (int k = 0; k < parameters[i][j].length; k++) {
+                    parameters[i][j][k] = rand.nextFloat() * 4 - 2;
+                }
+            }
+            for (int j = 0; j < weight[i].length; j++) {
+                weight[i][j] = rand.nextFloat() * 4 - 2;
+            }
+        }
         this.energy = energy;
         this.startX = x;
         this.startY = y;
@@ -18,6 +49,81 @@ public class Creature implements Comparable<Creature> {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.numLayers = numLayers;
+    }
+
+    public void setMethods() {
+        try {
+            methods = new Method[parameters.length];
+            for (int i = 0; i < parameters.length; i++) {
+                methods[i] = this.getClass().getMethod("line", float.class); // Placeholder
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } // Placeholder for setting methods, should be able to set different methods for each layer
+
+    }
+
+    public static float line(float x) {
+        return x;
+    }
+    
+    public float[] applyOneStep(float[] input, int step) {
+        float[] output = new float[parameters[step].length];
+        for (int i = 0; i < parameters[step][0].length; i++) {
+            for (int j = 0; j < parameters[step].length; j++) {
+                output[i] += input[j] * parameters[step][j][i];
+            }
+            output[i] += weight[step][i];
+            try {
+                output[i] = (Float) methods[step].invoke(null, output[i]); // Placeholder for method application
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return output;
+        // Should be matrix and vector multiplication using parameters
+        // Then add weight to result
+        // Also should apply methods at end
+    }
+
+    public float[] apply(float[] input) {
+        for (int i = 0; i < parameters.length; i++) {
+            input = applyOneStep(input, i);
+        }
+        return input;
+    }
+
+    public void mutate() {
+        for (int i = 0; i < parameters.length; i++) {
+            for (int j = 0; j < parameters[i].length; j++) {
+                for (int k = 0; k < parameters[i][j].length; k++) {
+                    if (Math.random() < 0.5) {
+                        parameters[i][j][k] += (Math.random() - 0.5) * 0.2;
+                    }
+                }
+            }
+            for (int j = 0; j < weight[i].length; j++) {
+                if (Math.random() < 0.5) {
+                    weight[i][j] += (Math.random() - 0.5) * 0.2;
+                }
+            }
+        }
+    }
+
+    public void ai(Environment e) {
+        float[] in = new float[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            in[i] = e.getTile((int) x+inputs[i][0], (int)y+inputs[i][1]);
+        }
+        float[] out = apply(in);
+        int largest = 0;
+        for (int i = 1; i < out.length; i++) {
+            if (out[i] > out[largest]) {
+                largest = i;
+            }
+        }
+        move(inputs[largest][0], inputs[largest][1], e);
     }
 
     public void move(int dx, int dy, Environment e) {
@@ -25,53 +131,23 @@ public class Creature implements Comparable<Creature> {
         y = (y+dy + e.tiles[0].length) % e.tiles[0].length;
     }
 
-    public int transform(int a) {
-        if (a!=2) {
-            return a;
-        }
-        return -1;
-    }
-
-    public void ai(float[] inputs, Environment e) {
-        float[] result = new float[aiParrameters.length];
-        for (int i = 0; i < aiParrameters.length; i++) {
-            result[i] = 0;
-            for (int j = 0; j < inputs.length; j++) {
-                result[i] += transform((int) inputs[j]) * aiParrameters[i][j];
-            }
-        }
-        if (result[0] == Math.max(Math.max(result[0], result[1]), Math.max(result[2], result[3]))) {
-            move(1, 0, e);
-        } else if (result[1] == Math.max(result[0], Math.max(result[1], Math.max(result[2], result[3])))) {
-            move(-1, 0, e);
-        } else if (result[2] == Math.max(result[0], Math.max(result[1], Math.max(result[2], result[3])))) {
-            move(0, 1, e);
-        } else if (result[3] == Math.max(result[0], Math.max(result[1], Math.max(result[2], result[3])))) {
-            move(0, -1, e);
-        }
-    }
-
     public void display() {
         Display.sketch.fill(0, 0, 0);
         Display.sketch.ellipse(x * Display.sketch.width/204 + Display.sketch.width/204/2, y * Display.sketch.height/115 + Display.sketch.height/115/2, Display.sketch.width/204*4/5, Display.sketch.height/115*4/5);
     }
-
-    public void mutate() {
-        for (int i = 0; i < aiParrameters.length; i++) {
-            for (int j = 0; j < aiParrameters[i].length; j++) {
-                if (Math.random() < 0.5) {
-                    aiParrameters[i][j] += (Math.random() - 0.5) * 0.2;
-                }
-            }
-        }
-    }
     
     public static Creature deepCopy(Creature original) {
-        float[][] newAIParams = new float[original.aiParrameters.length][original.aiParrameters[0].length];
-        for (int i = 0; i < original.aiParrameters.length; i++) {
-            System.arraycopy(original.aiParrameters[i], 0, newAIParams[i], 0, original.aiParrameters[i].length);
+        Creature result = new Creature(original.speed, original.numLayers, original.inputs, original.outputs, 0, original.x, original.y, original.width, original.height);
+        float[][][] newParams = new float[original.parameters.length][original.parameters[0].length][original.parameters[0][0].length];
+        float[][] newWeights = new float[original.weight.length][original.weight[0].length];
+        for (int i = 0; i < original.parameters.length; i++) {
+            System.arraycopy(original.parameters[i], 0, newParams[i], 0, original.parameters[i].length);
         }
-        return new Creature(original.speed, newAIParams, original.energy, original.x, original.y, original.width, original.height);
+        System.arraycopy(original.weight, 0, newWeights, 0, original.weight.length);
+        result.parameters = newParams;
+        result.weight = newWeights;
+        result.methods = original.methods; // Methods are immutable, so we can just copy the reference
+        return result;
     }
 
     public void resetEnergy() {

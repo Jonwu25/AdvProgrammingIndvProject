@@ -8,9 +8,12 @@ public class Display extends PApplet {
     public static Environment env;
     public static UI ui;
     public static int frame;
+    public static boolean paused, tutorial;
     public static void main(String[] args) {
         tickSpeed = 1;
         genTime = 50;
+        paused = true;
+        tutorial = true;
         env = new Environment(80, 60);
         PApplet.main("Display");
     }
@@ -30,16 +33,27 @@ public class Display extends PApplet {
 
     @Override
     public void draw() {
-        background(255);
-        frame++;
-        if (frame % tickSpeed == 0 && env != null) {
-            env.update();
-            if (frame % (tickSpeed * genTime) == 0) {
-                env.nextGeneration();
+        if (!paused && !tutorial) {
+            background(255);
+            frame++;
+            if (frame % tickSpeed == 0 && env != null) {
+                env.update();
+                if (frame % (tickSpeed * genTime) == 0) {
+                    env.nextGeneration();
+                }
+            }
+            if (env != null) {
+                env.display();
             }
         }
-        if (env != null) {
-            env.display();
+        if (tutorial) {
+            background(255);
+            fill(0, 0, 0);
+            text("Tutorial Placeholder (Click to see actual program)", width/2, height/2);
+            if (mousePressed) {
+                tutorial = false;
+                paused = false;
+            }
         }
     }
 }

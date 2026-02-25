@@ -51,6 +51,10 @@ public class Environment {
         }
     }
 
+    public int getTile(int x, int y) {
+        return tiles[(x + tiles.length) % tiles.length][(y + tiles[0].length) % tiles[0].length];
+    }
+
     public void nextGeneration() {
         Random rand = new Random();
         creatures.sort(null);
