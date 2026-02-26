@@ -33,8 +33,8 @@ public class Display extends PApplet {
 
     @Override
     public void draw() {
-        if (!paused && !tutorial) {
-            background(255);
+        background(255);
+        if (!paused) {
             frame++;
             if (frame % tickSpeed == 0 && env != null) {
                 env.update();
@@ -42,14 +42,19 @@ public class Display extends PApplet {
                     env.nextGeneration();
                 }
             }
-            if (env != null) {
-                env.display();
-            }
+        }
+        if (env != null) {
+            env.display();
         }
         if (tutorial) {
-            background(255);
-            fill(0, 0, 0);
-            text("Tutorial Placeholder (Click to see actual program)", width/2, height/2);
+            fill(220);
+            rect(width/4, height/4, width/2, height/2);
+            fill(0);
+            textSize(20);
+            textAlign(CENTER);
+            text("Welcome to the Evolution Simulation!", width/2, height/2 - 30);
+            text("This tutorial text will be updated after more features are added.", width/2, height/2);
+            text("(Click to continue)", width/2, height/2 + 30);
             if (mousePressed) {
                 tutorial = false;
                 paused = false;
