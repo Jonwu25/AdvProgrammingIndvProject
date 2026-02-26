@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Environment {
     int[][] tiles;
-    int[][] colors;
+    HashMap<Integer, int[]> colors = new HashMap<Integer, int[]>();
     int tick;
     ArrayList<Creature> creatures;
     ArrayList<Float> avgEnergy;
@@ -20,7 +20,7 @@ public class Environment {
                     tiles[x][y] = 0;
                 }
                 if (r < 1 && x >= 40) {
-                    tiles[x][y] = 2;
+                    tiles[x][y] = -1;
                 } else if (x >= 40) {
                     tiles[x][y] = 0;
                 }
@@ -28,7 +28,9 @@ public class Environment {
         }
         tick = 0;
         creatures = new ArrayList<Creature>();
-        colors = new int[][] {{0, 0, 255}, {0, 255, 0}, {255, 0, 0}};
+        colors.put(0, new int[]{0, 0, 255});
+        colors.put(1, new int[]{0, 255, 0});
+        colors.put(-1, new int[]{255, 0, 0});
         // Place initial creatures
         for (int i = 0; i < 300; i++) {
             float[][] aiParams = new float[4][4];
@@ -37,7 +39,8 @@ public class Environment {
                     aiParams[j][k] = (float)(Math.random() * 4 - 2);
                 }
             }
-            Creature c = new Creature(1.0f, aiParams, 10.0f, rand.nextInt(width), rand.nextInt(height), 4, 4);
+            Creature c = new Creature(1.0f, new int[]{4}, new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}, new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
+            c.setMethods();
             creatures.add(c);
         }
         avgEnergy = new ArrayList<Float>();
@@ -82,7 +85,8 @@ public class Environment {
     public void display() {
         for (int y = 0; y < tiles[0].length; y++) {
             for (int x = 0; x < tiles.length; x++) {
-                Display.sketch.fill(colors[tiles[x][y]][0], colors[tiles[x][y]][1], colors[tiles[x][y]][2]);
+                int[] color = colors.get(tiles[x][y]);
+                Display.sketch.fill(color[0], color[1], color[2]);
                 Display.sketch.rect(x * Display.sketch.width/204, y * Display.sketch.height/115, Display.sketch.width/204, Display.sketch.height/115);
             }
         }

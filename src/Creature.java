@@ -17,22 +17,28 @@ public class Creature implements Comparable<Creature> {
     public Creature(float speed, int[] numLayers, int[][] in, int[][] out, float energy, int x, int y, int width, int height) {
         this.speed = speed;
         // Randomly initialize parameters and weights
-        // First array in parameters has dimensions (input dimension) x numLayers[0]
+        // First array in parameters has dimensions numLayers[0] x (input dimension)
+        // Second has dimensions numLayers[1] x numLayers[0], etc.
+        // Last has (output dimension) x numLayers[numLayers.length-1]
         // First array in weight has dimension numlayers[0]
+        // Second has numLayers[1], etc.
+        // Last has output dimension
         Random rand = new Random();
         inputs = in;
         outputs = out;
-        parameters = new float[numLayers.length][][];
-        weight = new float[numLayers.length][];
+        parameters = new float[numLayers.length+1][][];
+        weight = new float[numLayers.length+1][];
         for (int i = 0; i < numLayers.length; i++) {
             if (i == 0) {
-                parameters[i] = new float[inputs.length][numLayers[i]];
+                parameters[i] = new float[numLayers[i]][inputs.length];
             } else {
-                parameters[i] = new float[numLayers[i-1]][numLayers[i]];
+                parameters[i] = new float[numLayers[i]][numLayers[i-1]];
             }
             weight[i] = new float[numLayers[i]];
         }
-        for (int i = 0; i < numLayers.length; i++) {
+        parameters[numLayers.length] = new float[outputs.length][numLayers[numLayers.length-1]];
+        weight[numLayers.length] = new float[outputs.length];
+        for (int i = 0; i < parameters.length; i++) {
             for (int j = 0; j < parameters[i].length; j++) {
                 for (int k = 0; k < parameters[i][j].length; k++) {
                     parameters[i][j][k] = rand.nextFloat() * 4 - 2;
@@ -67,16 +73,24 @@ public class Creature implements Comparable<Creature> {
     public static float line(float x) {
         return x;
     }
+
+    public static float sigmoid(float x) {
+        return (float)(1/(1+Math.exp(-x)));
+    }
+
+    public static float relu(float x) {
+        return Math.max(0, x);
+    }
     
     public float[] applyOneStep(float[] input, int step) {
         float[] output = new float[parameters[step].length];
-        for (int i = 0; i < parameters[step][0].length; i++) {
-            for (int j = 0; j < parameters[step].length; j++) {
-                output[i] += input[j] * parameters[step][j][i];
+        for (int i = 0; i < parameters[step].length; i++) {
+            for (int j = 0; j < parameters[step][0].length; j++) {
+                output[i] += input[j] * parameters[step][i][j];
             }
             output[i] += weight[step][i];
             try {
-                output[i] = (Float) methods[step].invoke(null, output[i]); // Placeholder for method application
+                output[i] = (Float) methods[step].invoke(null, output[i]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -138,15 +152,17 @@ public class Creature implements Comparable<Creature> {
     
     public static Creature deepCopy(Creature original) {
         Creature result = new Creature(original.speed, original.numLayers, original.inputs, original.outputs, 0, original.x, original.y, original.width, original.height);
-        float[][][] newParams = new float[original.parameters.length][original.parameters[0].length][original.parameters[0][0].length];
-        float[][] newWeights = new float[original.weight.length][original.weight[0].length];
+        float[][][] newParams = new float[original.parameters.length][][];
+        float[][] newWeights = new float[original.weight.length][];
         for (int i = 0; i < original.parameters.length; i++) {
+            newParams[i] = new float[original.parameters[i].length][original.parameters[i][0].length];
             System.arraycopy(original.parameters[i], 0, newParams[i], 0, original.parameters[i].length);
         }
         System.arraycopy(original.weight, 0, newWeights, 0, original.weight.length);
         result.parameters = newParams;
         result.weight = newWeights;
         result.methods = original.methods; // Methods are immutable, so we can just copy the reference
+        result.setMethods();
         return result;
     }
 
@@ -159,7 +175,7 @@ public class Creature implements Comparable<Creature> {
     }
 
     public void update(Environment e) {
-        ai(new float[]{e.tiles[(x-1+e.tiles.length)%e.tiles.length][y], e.tiles[(x+1)%e.tiles.length][y], e.tiles[x][(y-1+e.tiles[0].length)%e.tiles[0].length], e.tiles[x][(y+1)%e.tiles[0].length]}, e);
+        ai(e);
         if (e.tiles[x][y] == 1) {
             energy += 1;
         } else if (e.tiles[x][y] == 2) {
