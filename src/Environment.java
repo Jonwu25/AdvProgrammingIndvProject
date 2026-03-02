@@ -14,15 +14,12 @@ public class Environment {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 float r = rand.nextFloat();
-                if (r < 1 && x < 40) {
+                if (r < 0.3) {
+                    tiles[x][y] = 0;
+                } else if (r < 0.6) {
                     tiles[x][y] = 1;
-                } else if (x < 40) {
-                    tiles[x][y] = 0;
-                }
-                if (r < 1 && x >= 40) {
+                } else {
                     tiles[x][y] = -1;
-                } else if (x >= 40) {
-                    tiles[x][y] = 0;
                 }
             }
         }
@@ -31,6 +28,8 @@ public class Environment {
         colors.put(0, new int[]{0, 0, 255});
         colors.put(1, new int[]{0, 255, 0});
         colors.put(-1, new int[]{255, 0, 0});
+        int[][] in = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {0, 0}};
+        int[][] moves = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {0, 0}};
         // Place initial creatures
         for (int i = 0; i < 300; i++) {
             float[][] aiParams = new float[4][4];
@@ -39,7 +38,7 @@ public class Environment {
                     aiParams[j][k] = (float)(Math.random() * 4 - 2);
                 }
             }
-            Creature c = new Creature(1.0f, new int[]{4}, new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}, new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
+            Creature c = new Creature(1.0f, new int[]{4}, in, moves, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
             c.setMethods();
             creatures.add(c);
         }

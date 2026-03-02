@@ -1,20 +1,30 @@
 import java.util.*;
 import processing.core.PApplet;
 import processing.core.PImage;
+import java.lang.reflect.Field;
 
 public class Display extends PApplet {
     public static PApplet sketch;
-    public static int tickSpeed, genTime;
+    public static int tickSpeed;
+    public static int genSpeed;
     public static Environment env;
     public static UI ui;
     public static int frame;
     public static boolean paused, tutorial;
     public static void main(String[] args) {
         tickSpeed = 1;
-        genTime = 50;
-        paused = true;
+        genSpeed = 50;
         tutorial = true;
+        paused = true;
         env = new Environment(80, 60);
+        try {
+            Field tickField = Display.class.getDeclaredField("tickSpeed");
+            tickField.setAccessible(true);
+            Field pausedField = Display.class.getDeclaredField("paused");
+            pausedField.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         PApplet.main("Display");
     }
 
@@ -38,7 +48,7 @@ public class Display extends PApplet {
             frame++;
             if (frame % tickSpeed == 0 && env != null) {
                 env.update();
-                if (frame % (tickSpeed * genTime) == 0) {
+                if (frame % (tickSpeed * genSpeed) == 0) {
                     env.nextGeneration();
                 }
             }

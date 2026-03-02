@@ -1,11 +1,28 @@
 public class UI {
-    int tickSpeed;
+    // Should contain all UI elements and handle their updates and display
+    Button[] buttons;
+    Slider[] sliders;
 
-    public void display() {
-        // Placeholder
+    public UI(Button[] buttons, Slider[] sliders) {
+        this.buttons = buttons;
+        this.sliders = sliders;
     }
 
-    public int getTickSpeed() {
-        return tickSpeed;
+    public void display() {
+        for (Button b : buttons) {
+            b.display();
+        }
+        for (Slider s : sliders) {
+            s.display();
+        }
+    }
+
+    public void update() {
+        for (Button b : buttons) {
+            b.update();
+        }
+        for (Slider s : sliders) {
+            s.update();
+        }
     }
 }

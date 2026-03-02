@@ -171,7 +171,10 @@ public class Creature implements Comparable<Creature> {
     }
 
     public int compareTo(Creature other) {
-        return Float.compare(this.energy+1f*(float)(Math.abs(this.x - this.startX) + Math.abs(this.y - this.startY)), other.energy+1f*(float)(Math.abs(other.x - other.startX) + Math.abs(other.y - other.startY)));
+        // +1f*(float)(Math.abs(this.x - this.startX) + Math.abs(this.y - this.startY))
+        // +1f*(float)(Math.abs(other.x - other.startX) + Math.abs(other.y - other.startY))
+        // Add above to encourage exploration, but for now just use energy
+        return Float.compare(this.energy, other.energy);
     }
 
     public void update(Environment e) {
