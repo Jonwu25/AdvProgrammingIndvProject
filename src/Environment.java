@@ -29,7 +29,7 @@ public class Environment {
         colors.put(1, new int[]{0, 255, 0});
         colors.put(-1, new int[]{255, 0, 0});
         int[][] in = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {0, 0}};
-        int[][] moves = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {0, 0}};
+        int[][] moves = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
         // Place initial creatures
         for (int i = 0; i < 300; i++) {
             float[][] aiParams = new float[4][4];
@@ -57,6 +57,12 @@ public class Environment {
         return tiles[(x + tiles.length) % tiles.length][(y + tiles[0].length) % tiles[0].length];
     }
 
+    public void moveUpdates(int frame, int tickSpeed) {
+        for (Creature c : creatures) {
+            c.moveUpdate(frame, tickSpeed);
+        }
+    }
+
     public void nextGeneration() {
         Random rand = new Random();
         creatures.sort(null);
@@ -82,15 +88,20 @@ public class Environment {
     }
 
     public void display() {
+        int displayWidth = Display.sketch.width/2 - Display.sketch.width/100;
+        int displayHeight = Display.sketch.height - Display.sketch.height/100;
+        int sidelength = Math.min(displayWidth/tiles.length, displayHeight/tiles[0].length);
+        int xOffset = Display.sketch.width/4 - tiles.length/2 * sidelength;
+        int yOffset = Display.sketch.height/2 - tiles[0].length/2 * sidelength;
         for (int y = 0; y < tiles[0].length; y++) {
             for (int x = 0; x < tiles.length; x++) {
                 int[] color = colors.get(tiles[x][y]);
                 Display.sketch.fill(color[0], color[1], color[2]);
-                Display.sketch.rect(x * Display.sketch.width/204, y * Display.sketch.height/115, Display.sketch.width/204, Display.sketch.height/115);
+                Display.sketch.rect(x * sidelength + xOffset, y * sidelength + yOffset, sidelength, sidelength);
             }
         }
         for (Creature c : creatures) {
-            c.display();
+            c.display(xOffset, yOffset, sidelength, tiles.length, tiles[0].length);
         }
         for (int i = 0; i < avgEnergy.size() - 1; i++) {
             Display.sketch.stroke(0);

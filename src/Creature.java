@@ -9,7 +9,9 @@ public class Creature implements Comparable<Creature> {
     int[][] outputs; // {(x, y), ...}
     Method[] methods;
     float energy;
-    int x, y;
+    int x, y, oldX, oldY;
+    float velx, vely;
+    float displayX, displayY;
     int width, height;
     int startX, startY;
     int[] numLayers;
@@ -67,7 +69,6 @@ public class Creature implements Comparable<Creature> {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } // Placeholder for setting methods, should be able to set different methods for each layer
-
     }
 
     public static float line(float x) {
@@ -137,17 +138,65 @@ public class Creature implements Comparable<Creature> {
                 largest = i;
             }
         }
+        oldX = x;
+        oldY = y;
         move(inputs[largest][0], inputs[largest][1], e);
     }
 
     public void move(int dx, int dy, Environment e) {
         x = (x+dx + e.tiles.length) % e.tiles.length;
         y = (y+dy + e.tiles[0].length) % e.tiles[0].length;
+        velx = dx;
+        vely = dy;
     }
 
-    public void display() {
+    public void display(int xOffset, int yOffset, int sidelength, int width, int height) {
         Display.sketch.fill(0, 0, 0);
-        Display.sketch.ellipse(x * Display.sketch.width/204 + Display.sketch.width/204/2, y * Display.sketch.height/115 + Display.sketch.height/115/2, Display.sketch.width/204*4/5, Display.sketch.height/115*4/5);
+        Display.sketch.ellipse(displayX * sidelength + xOffset + sidelength/2, displayY * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
+        if (displayX > width - 1) {
+            Display.sketch.ellipse((displayX - width) * sidelength + xOffset + sidelength/2, displayY * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
+            Display.sketch.noStroke();
+            Display.sketch.fill(255);
+            Display.sketch.rect((width) * sidelength + xOffset, (displayY) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.rect((-1) * sidelength + xOffset, (displayY) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.stroke(0);
+            Display.sketch.line((width) * sidelength + xOffset, (displayY) * sidelength + yOffset, (width) * sidelength + xOffset, (displayY+1) * sidelength + yOffset);
+            Display.sketch.line((0) * sidelength + xOffset, (displayY) * sidelength + yOffset, (0) * sidelength + xOffset, (displayY+1) * sidelength + yOffset);
+            Display.sketch.fill(0);
+        }
+        if (displayX < 0) {
+            Display.sketch.ellipse((displayX + width) * sidelength + xOffset + sidelength/2, displayY * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
+            Display.sketch.noStroke();
+            Display.sketch.fill(255);
+            Display.sketch.rect((width) * sidelength + xOffset, (displayY) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.rect((-1) * sidelength + xOffset, (displayY) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.stroke(0);
+            Display.sketch.line((width) * sidelength + xOffset, (displayY) * sidelength + yOffset, (width) * sidelength + xOffset, (displayY+1) * sidelength + yOffset);
+            Display.sketch.line((0) * sidelength + xOffset, (displayY) * sidelength + yOffset, (0) * sidelength + xOffset, (displayY+1) * sidelength + yOffset);
+            Display.sketch.fill(0);
+        }
+        if (displayY > height - 1) {
+            Display.sketch.ellipse(displayX * sidelength + xOffset + sidelength/2, (displayY - height) * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
+            Display.sketch.noStroke();
+            Display.sketch.fill(255);
+            Display.sketch.rect((displayX) * sidelength + xOffset, (height) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.rect((displayX) * sidelength + xOffset, (-1) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.stroke(0);
+            Display.sketch.line((displayX) * sidelength + xOffset, (height) * sidelength + yOffset, (displayX+1) * sidelength + xOffset, (height) * sidelength + yOffset);
+            Display.sketch.line((displayX) * sidelength + xOffset, (0) * sidelength + yOffset, (displayX+1) * sidelength + xOffset, (0) * sidelength + yOffset);
+            Display.sketch.fill(0);
+        }
+        if (displayY < 0) {
+            Display.sketch.ellipse(displayX * sidelength + xOffset + sidelength/2, (displayY + height) * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
+            Display.sketch.noStroke();
+            Display.sketch.fill(255);
+            Display.sketch.rect((displayX) * sidelength + xOffset, (height) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.rect((displayX) * sidelength + xOffset, (-1) * sidelength + yOffset, sidelength, sidelength);
+            Display.sketch.stroke(0);
+            Display.sketch.line((displayX) * sidelength + xOffset, (height) * sidelength + yOffset, (displayX+1) * sidelength + xOffset, (height) * sidelength + yOffset);
+            Display.sketch.line((displayX) * sidelength + xOffset, (0) * sidelength + yOffset, (displayX+1) * sidelength + xOffset, (0) * sidelength + yOffset);
+            Display.sketch.fill(0);
+        }
     }
     
     public static Creature deepCopy(Creature original) {
@@ -186,5 +235,11 @@ public class Creature implements Comparable<Creature> {
         } else if (e.tiles[x][y] == 0) {
             energy -= 0.1;
         }
+    }
+
+    public void moveUpdate(int frame, int tickSpeed) {
+        float ratio = (frame % tickSpeed) / (float) tickSpeed;
+        displayX = ratio * velx + oldX;
+        displayY = ratio * vely + oldY;
     }
 }

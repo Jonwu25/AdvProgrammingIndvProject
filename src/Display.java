@@ -10,18 +10,17 @@ public class Display extends PApplet {
     public static Environment env;
     public static UI ui;
     public static int frame;
-    public static boolean paused, tutorial;
+    public static String state;
     public static void main(String[] args) {
-        tickSpeed = 1;
+        tickSpeed = 4;
         genSpeed = 50;
-        tutorial = true;
-        paused = true;
+        state = "tutorial";
         env = new Environment(80, 60);
         try {
             Field tickField = Display.class.getDeclaredField("tickSpeed");
             tickField.setAccessible(true);
-            Field pausedField = Display.class.getDeclaredField("paused");
-            pausedField.setAccessible(true);
+            Field stateField = Display.class.getDeclaredField("state");
+            stateField.setAccessible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,12 +38,13 @@ public class Display extends PApplet {
         sketch = this;
         background(255);
         // surface.setResizable(true);
+        frameRate(10);
     }
 
     @Override
     public void draw() {
         background(255);
-        if (!paused) {
+        if (state.equals("running")) {
             frame++;
             if (frame % tickSpeed == 0 && env != null) {
                 env.update();
@@ -52,11 +52,12 @@ public class Display extends PApplet {
                     env.nextGeneration();
                 }
             }
+            env.moveUpdates(frame, tickSpeed);
         }
         if (env != null) {
             env.display();
         }
-        if (tutorial) {
+        if (state.equals("tutorial")) {
             fill(220);
             rect(width/4, height/4, width/2, height/2);
             fill(0);
@@ -66,8 +67,7 @@ public class Display extends PApplet {
             text("This tutorial text will be updated after more features are added.", width/2, height/2);
             text("(Click to continue)", width/2, height/2 + 30);
             if (mousePressed) {
-                tutorial = false;
-                paused = false;
+                state = "running";
             }
         }
     }
