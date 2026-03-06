@@ -14,10 +14,10 @@ public class Environment {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 float r = rand.nextFloat();
-                if (r < 0.3) {
-                    tiles[x][y] = 0;
-                } else if (r < 0.6) {
+                if (x < width/3) {
                     tiles[x][y] = 1;
+                } else if (x < 2*width/3) {
+                    tiles[x][y] = 0;
                 } else {
                     tiles[x][y] = -1;
                 }

@@ -1,8 +1,6 @@
 public class Button {
     int x, y, width, height;
     boolean hovered;
-    boolean clicked;
-    boolean clicking;
     String label;
     Runnable onClick;
 
@@ -23,20 +21,9 @@ public class Button {
         }
     }
 
-    public void checkClick() {
-        if (Display.sketch.mousePressed) {
-            clicked = !clicking;
-            clicking = true;
-        } else {
-            clicked = false;
-            clicking = false;
-        }
-    }
-    
     public void update() {
         checkHover();
-        checkClick();
-        if (hovered && clicked) {
+        if (hovered && Display.clicked) {
             onClick.run();
         }
     }

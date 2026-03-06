@@ -6,13 +6,17 @@ import java.lang.reflect.Field;
 public class Display extends PApplet {
     public static PApplet sketch;
     public static int tickSpeed;
+    public static int oldTickSpeed;
     public static int genSpeed;
     public static Environment env;
     public static UI ui;
     public static int frame;
     public static String state;
+    public static boolean clicked;
+    public static boolean clicking;
     public static void main(String[] args) {
         tickSpeed = 1;
+        oldTickSpeed = tickSpeed;
         genSpeed = 50;
         state = "0tutorial";
         env = new Environment(80, 60);
@@ -30,7 +34,7 @@ public class Display extends PApplet {
         sketch = this;
         background(255);
         // surface.setResizable(true);
-        frameRate(10);
+        // frameRate(10);
         Slider[] sliders;
         try {
             Field tickField = Display.class.getDeclaredField("tickSpeed");
@@ -55,8 +59,19 @@ public class Display extends PApplet {
 
     @Override
     public void draw() {
+        if (Display.sketch.mousePressed) {
+            clicked = !clicking;
+            clicking = true;
+        } else {
+            clicked = false;
+            clicking = false;
+        }
         background(255);
         ui.update();
+        if (tickSpeed != oldTickSpeed) {
+            frame = (int) ((frame / (float)oldTickSpeed) * tickSpeed);
+            oldTickSpeed = tickSpeed;
+        }
         if (state.equals("running")) {
             frame++;
             if (frame % tickSpeed == 0 && env != null) {
