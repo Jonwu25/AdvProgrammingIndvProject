@@ -41,13 +41,13 @@ public class Display extends PApplet {
             tickField.setAccessible(true);
             Field stateField = Display.class.getDeclaredField("state");
             stateField.setAccessible(true);
-            sliders = new Slider[]{new Slider(width - width/5 - width/10, height/10, width/5, height/25, 1, 10, tickField, "Tick Speed")};
+            sliders = new Slider[]{new Slider(1 - 1f/5 - 1f/10, 1f/10, 1f/5, 1f/25, 1, 10, tickField, "Tick Speed")};
         } catch (Exception e) {
             sliders = new Slider[0];
             e.printStackTrace();
         }
-        Button[] tutorialButtons = new Button[]{new Button(width/2 - width/60, height/2 + height/10 - height/60, width/30, height/30, "Next", () -> state = "running")};
-        Button[] simulationButtons = new Button[]{new Button(width - width/100 - width/30, height/100, width/30, height/30, "Pause", () -> {
+        Button[] tutorialButtons = new Button[]{new Button(1f/2 - 1f/60, 1f/2 + 1f/10 - 1f/60, 1f/30, 1f/30, "Next", () -> state = "running")};
+        Button[] simulationButtons = new Button[]{new Button(1f - 1f/100 - 1f/30, 1f/100, 1f/30, 1f/30, "Pause", () -> {
             if (state.equals("running")) {
                 state = "paused";
             } else {

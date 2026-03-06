@@ -1,10 +1,10 @@
 public class Button {
-    int x, y, width, height;
+    float x, y, width, height; // All relative to screen size (0-1)
     boolean hovered;
     String label;
     Runnable onClick;
 
-    public Button(int x, int y, int width, int height, String label, Runnable onClick) {
+    public Button(float x, float y, float width, float height, String label, Runnable onClick) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -14,7 +14,9 @@ public class Button {
     }
 
     public void checkHover() {
-        if (Display.sketch.mouseX >= x && Display.sketch.mouseX <= x + width && Display.sketch.mouseY >= y && Display.sketch.mouseY <= y + height) {
+        int WIDTH = Display.sketch.width;
+        int HEIGHT = Display.sketch.height;
+        if (Display.sketch.mouseX >= x*WIDTH && Display.sketch.mouseX <= (x + width)*WIDTH && Display.sketch.mouseY >= y*HEIGHT && Display.sketch.mouseY <= (y + height)*HEIGHT) {
             hovered = true;
         } else {
             hovered = false;
@@ -29,14 +31,16 @@ public class Button {
     }
 
     public void display() {
+        int WIDTH = Display.sketch.width;
+        int HEIGHT = Display.sketch.height;
         if(hovered) {
             Display.sketch.fill(200);
         } else {
             Display.sketch.fill(255);
         }
-        Display.sketch.rect(x, y, width, height);
+        Display.sketch.rect(x*WIDTH, y*HEIGHT, width*WIDTH, height*HEIGHT);
         Display.sketch.fill(0);
         Display.sketch.textAlign(Display.sketch.CENTER, Display.sketch.CENTER);
-        Display.sketch.text(label, x + width / 2, y + height / 2);
+        Display.sketch.text(label, (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT);
     }
 }

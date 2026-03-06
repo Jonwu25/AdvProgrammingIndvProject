@@ -1,13 +1,13 @@
 import java.lang.reflect.Field;
 
 public class Slider {
-    int x, y, width, height;
+    float x, y, width, height; // All relative to screen size (0-1)
     int min, max;
     Field value;
     boolean dragging;
     String label;
     
-    public Slider(int x, int y, int width, int height, int min, int max, Field value, String label) {
+    public Slider(float x, float y, float width, float height, int min, int max, Field value, String label) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -19,8 +19,11 @@ public class Slider {
     }
 
     public void checkDragging() {
+        int WIDTH = Display.sketch.width;
+        int HEIGHT = Display.sketch.height;
+
         if (Display.clicked || (dragging && Display.clicking)) {
-            if (Display.sketch.mouseX >= x && Display.sketch.mouseX <= x + width && Display.sketch.mouseY >= y && Display.sketch.mouseY <= y + height) {
+            if (Display.sketch.mouseX >= x*WIDTH && Display.sketch.mouseX <= (x + width)*WIDTH && Display.sketch.mouseY >= y*HEIGHT && Display.sketch.mouseY <= (y + height)*HEIGHT) {
                 dragging = true;
             }
         } else {
@@ -30,14 +33,16 @@ public class Slider {
 
     public void update() {
         checkDragging();
+        int WIDTH = Display.sketch.width;
+        int HEIGHT = Display.sketch.height;
         if (dragging) {
-            if (Display.sketch.mouseX < x) {
+            if (Display.sketch.mouseX < x*WIDTH) {
                 try {
                     value.set(null, min);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (Display.sketch.mouseX > x + width) {
+            } else if (Display.sketch.mouseX > (x + width)*WIDTH) {
                 try {
                     value.set(null, max);
                 } catch (Exception e) {
@@ -45,7 +50,7 @@ public class Slider {
                 }
             } else {
                 try {
-                    value.set(null, min+(max-min)*(Display.sketch.mouseX-x)/width);
+                    value.set(null, (int) (min+(max-min)*(Display.sketch.mouseX-x*WIDTH)/(width*WIDTH)));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -63,19 +68,22 @@ public class Slider {
             ratio = 0;
         }
         
-        Display.sketch.rect(x, y, ratio*width, height, height/2, 0, 0, height/2);
+        int WIDTH = Display.sketch.width;
+        int HEIGHT = Display.sketch.height;
+
+        Display.sketch.rect(x*WIDTH, y*HEIGHT, ratio*width*WIDTH, height*HEIGHT, height*HEIGHT/2, 0, 0, height*HEIGHT/2);
         Display.sketch.fill(255);
-        Display.sketch.rect(x+ratio*width, y, (1-ratio)*width, height, 0, height/2, height/2, 0);
-        Display.sketch.circle(x+ratio*width, y+height/2, height);
+        Display.sketch.rect((x+ratio*width)*WIDTH, y*HEIGHT, (1-ratio)*width*WIDTH, height*HEIGHT, 0, height*HEIGHT/2, height*HEIGHT/2, 0);
+        Display.sketch.circle((x+ratio*width)*WIDTH, (y+height/2)*HEIGHT, height*HEIGHT);
         Display.sketch.fill(0);
         Display.sketch.textSize(12);
         try {
-            Display.sketch.text(label + ": " + value.getInt(null), x + width/2, y - height/2);
+            Display.sketch.text(label + ": " + value.getInt(null), x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
         } catch (Exception e) {
-            Display.sketch.text(label, x + width/2, y - height/2);
+            Display.sketch.text(label, x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
             e.printStackTrace();
         }
-        Display.sketch.text(min, x, y + height*3/2);
-        Display.sketch.text(max, x + width, y + height*3/2);
+        Display.sketch.text(min, x*WIDTH, y*HEIGHT + height*HEIGHT*3/2);
+        Display.sketch.text(max, (x + width)*WIDTH, (y + height*3/2)*HEIGHT);
     }
 }
