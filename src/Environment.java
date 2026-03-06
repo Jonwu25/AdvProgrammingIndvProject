@@ -32,13 +32,7 @@ public class Environment {
         int[][] moves = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
         // Place initial creatures
         for (int i = 0; i < 300; i++) {
-            float[][] aiParams = new float[4][4];
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 4; k++) {
-                    aiParams[j][k] = (float)(Math.random() * 4 - 2);
-                }
-            }
-            Creature c = new Creature(1.0f, new int[]{4}, in, moves, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
+            Creature c = new Creature(1.0f, new int[]{4, 4}, in, moves, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
             c.setMethods();
             creatures.add(c);
         }
