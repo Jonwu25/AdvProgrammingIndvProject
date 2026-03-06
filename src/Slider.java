@@ -19,7 +19,7 @@ public class Slider {
     }
 
     public void checkDragging() {
-        if (Display.sketch.mousePressed) {
+        if (Display.clicked || (dragging && Display.clicking)) {
             if (Display.sketch.mouseX >= x && Display.sketch.mouseX <= x + width && Display.sketch.mouseY >= y && Display.sketch.mouseY <= y + height) {
                 dragging = true;
             }
