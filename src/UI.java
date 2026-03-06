@@ -1,15 +1,22 @@
 public class UI {
     // Should contain all UI elements and handle their updates and display
-    Button[] buttons;
+    Button[] tutorialButtons;
+    Button[] simulationButtons;
     Slider[] sliders;
 
-    public UI(Button[] buttons, Slider[] sliders) {
-        this.buttons = buttons;
+    public UI(Button[] tutorialButtons, Button[] simulationButtons, Slider[] sliders) {
+        this.tutorialButtons = tutorialButtons;
+        this.simulationButtons = simulationButtons;
         this.sliders = sliders;
     }
 
     public void display() {
-        for (Button b : buttons) {
+        if (Display.state.contains("tutorial")) {
+            for (Button b : tutorialButtons) {
+                b.display();
+            }
+        }
+        for (Button b : simulationButtons) {
             b.display();
         }
         for (Slider s : sliders) {
@@ -18,11 +25,16 @@ public class UI {
     }
 
     public void update() {
-        for (Button b : buttons) {
+        if (Display.state.contains("tutorial")) {
+            Button b = tutorialButtons[Display.state.charAt(0) - '0'];
             b.update();
-        }
-        for (Slider s : sliders) {
-            s.update();
+        } else {
+            for (Button b : simulationButtons) {
+                b.update();
+            }
+            for (Slider s : sliders) {
+                s.update();
+            }
         }
     }
 }

@@ -5,8 +5,9 @@ public class Slider {
     int min, max;
     Field value;
     boolean dragging;
+    String label;
     
-    public Slider(int x, int y, int width, int height, int min, int max, Field value) {
+    public Slider(int x, int y, int width, int height, int min, int max, Field value, String label) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -14,6 +15,7 @@ public class Slider {
         this.min = min;
         this.max = max;
         this.value = value;
+        this.label = label;
     }
 
     public void checkDragging() {
@@ -65,5 +67,15 @@ public class Slider {
         Display.sketch.fill(255);
         Display.sketch.rect(x+ratio*width, y, (1-ratio)*width, height, 0, height/2, height/2, 0);
         Display.sketch.circle(x+ratio*width, y+height/2, height);
+        Display.sketch.fill(0);
+        Display.sketch.textSize(12);
+        try {
+            Display.sketch.text(label + ": " + value.getInt(null), x + width/2, y - height/2);
+        } catch (Exception e) {
+            Display.sketch.text(label, x + width/2, y - height/2);
+            e.printStackTrace();
+        }
+        Display.sketch.text(min, x, y + height*3/2);
+        Display.sketch.text(max, x + width, y + height*3/2);
     }
 }

@@ -12,18 +12,10 @@ public class Display extends PApplet {
     public static int frame;
     public static String state;
     public static void main(String[] args) {
-        tickSpeed = 4;
+        tickSpeed = 1;
         genSpeed = 50;
-        state = "tutorial";
+        state = "0tutorial";
         env = new Environment(80, 60);
-        try {
-            Field tickField = Display.class.getDeclaredField("tickSpeed");
-            tickField.setAccessible(true);
-            Field stateField = Display.class.getDeclaredField("state");
-            stateField.setAccessible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         PApplet.main("Display");
     }
 
@@ -39,11 +31,32 @@ public class Display extends PApplet {
         background(255);
         // surface.setResizable(true);
         frameRate(10);
+        Slider[] sliders;
+        try {
+            Field tickField = Display.class.getDeclaredField("tickSpeed");
+            tickField.setAccessible(true);
+            Field stateField = Display.class.getDeclaredField("state");
+            stateField.setAccessible(true);
+            sliders = new Slider[]{new Slider(width - width/5 - width/10, height/10, width/5, height/25, 1, 10, tickField, "Tick Speed")};
+        } catch (Exception e) {
+            sliders = new Slider[0];
+            e.printStackTrace();
+        }
+        Button[] tutorialButtons = new Button[]{new Button(width/2 - width/60, height/2 + height/10 - height/60, width/30, height/30, "Next", () -> state = "running")};
+        Button[] simulationButtons = new Button[]{new Button(width - width/100 - width/30, height/100, width/30, height/30, "Pause", () -> {
+            if (state.equals("running")) {
+                state = "paused";
+            } else {
+                state = "running";
+            }
+        })};
+        ui = new UI(tutorialButtons, simulationButtons, sliders);
     }
 
     @Override
     public void draw() {
         background(255);
+        ui.update();
         if (state.equals("running")) {
             frame++;
             if (frame % tickSpeed == 0 && env != null) {
@@ -57,7 +70,10 @@ public class Display extends PApplet {
         if (env != null) {
             env.display();
         }
-        if (state.equals("tutorial")) {
+        if (!state.contains("tutorial")) {
+            ui.display();
+        }
+        if (state.equals("0tutorial")) {
             fill(220);
             rect(width/4, height/4, width/2, height/2);
             fill(0);
@@ -65,10 +81,7 @@ public class Display extends PApplet {
             textAlign(CENTER);
             text("Welcome to the Evolution Simulation!", width/2, height/2 - 30);
             text("This tutorial text will be updated after more features are added.", width/2, height/2);
-            text("(Click to continue)", width/2, height/2 + 30);
-            if (mousePressed) {
-                state = "running";
-            }
+            ui.display();
         }
     }
 }

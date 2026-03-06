@@ -150,7 +150,7 @@ public class Creature implements Comparable<Creature> {
         vely = dy;
     }
 
-    public void display(int xOffset, int yOffset, int sidelength, int width, int height) {
+    public void display(float xOffset, float yOffset, float sidelength, int width, int height) {
         Display.sketch.fill(0, 0, 0);
         Display.sketch.ellipse(displayX * sidelength + xOffset + sidelength/2, displayY * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
         if (displayX > width - 1) {

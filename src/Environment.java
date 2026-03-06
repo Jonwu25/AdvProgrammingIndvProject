@@ -88,11 +88,13 @@ public class Environment {
     }
 
     public void display() {
-        int displayWidth = Display.sketch.width/2 - Display.sketch.width/100;
-        int displayHeight = Display.sketch.height - Display.sketch.height/100;
-        int sidelength = Math.min(displayWidth/tiles.length, displayHeight/tiles[0].length);
-        int xOffset = Display.sketch.width/4 - tiles.length/2 * sidelength;
-        int yOffset = Display.sketch.height/2 - tiles[0].length/2 * sidelength;
+        // tiles
+
+        float displayWidth = Display.sketch.width/2 - Display.sketch.width/30;
+        float displayHeight = Display.sketch.height - Display.sketch.height/30;
+        float sidelength = Math.min(displayWidth/tiles.length, displayHeight/tiles[0].length);
+        float xOffset = Display.sketch.width/4 - (float) tiles.length/2 * sidelength;
+        float yOffset = Display.sketch.height/2 - (float) tiles[0].length/2 * sidelength;
         for (int y = 0; y < tiles[0].length; y++) {
             for (int x = 0; x < tiles.length; x++) {
                 int[] color = colors.get(tiles[x][y]);
@@ -100,17 +102,49 @@ public class Environment {
                 Display.sketch.rect(x * sidelength + xOffset, y * sidelength + yOffset, sidelength, sidelength);
             }
         }
+
+        // creatures
+
         for (Creature c : creatures) {
             c.display(xOffset, yOffset, sidelength, tiles.length, tiles[0].length);
         }
-        for (int i = 0; i < avgEnergy.size() - 1; i++) {
-            Display.sketch.stroke(0);
-            Display.sketch.strokeWeight(2);
-            float minEnergy = Collections.min(avgEnergy);
-            float maxEnergy = Collections.max(avgEnergy);
-            Display.sketch.line(i * Display.sketch.width/(avgEnergy.size() - 1), Display.sketch.height - (avgEnergy.get(i)-minEnergy) * (Display.sketch.height/2)/(maxEnergy-minEnergy),
-                            (i + 1) * Display.sketch.width/(avgEnergy.size() - 1), Display.sketch.height - (avgEnergy.get(i + 1)-minEnergy) * (Display.sketch.height/2)/(maxEnergy-minEnergy));
+
+        // energy graph
+
+       displayEnergyGraph();
+    }
+
+    public void displayEnergyGraph() {
+        float displayWidth = Display.sketch.width/2 - Display.sketch.width/30;
+        float displayHeight = Display.sketch.height/2 - Display.sketch.height/10;
+        float xOffset = Display.sketch.width/2 + Display.sketch.width/60;
+        float yOffset = Display.sketch.height/2 + 4*Display.sketch.height/60;
+        Display.sketch.textSize(16);
+        Display.sketch.fill(0);
+        Display.sketch.text("Graph of Average Energy Over Generations", xOffset+displayWidth/2, yOffset-Display.sketch.height/60);
+        Display.sketch.textSize(12);
+        Display.sketch.text("Generations", xOffset+displayWidth/2, yOffset+displayHeight+Display.sketch.height/30);
+        Display.sketch.stroke(0);
+        Display.sketch.strokeWeight(2);
+        Display.sketch.fill(255);
+        Display.sketch.rect(xOffset, yOffset, displayWidth, displayHeight);
+        if (avgEnergy.size() < 2) {
             Display.sketch.strokeWeight(1);
+            return;
         }
+        float minEnergy = Collections.min(avgEnergy);
+        float maxEnergy = Collections.max(avgEnergy);
+        for (int i = 0; i < avgEnergy.size() - 1; i++) {
+            Display.sketch.line(xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight - (avgEnergy.get(i)-minEnergy) * (displayHeight)/(maxEnergy-minEnergy),
+                            xOffset + (i + 1) * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight - (avgEnergy.get(i + 1)-minEnergy) * (displayHeight)/(maxEnergy-minEnergy));
+        }
+        for (int i = 0; i < avgEnergy.size(); i++) {
+            Display.sketch.textSize(10);
+            Display.sketch.fill(0);
+            Display.sketch.text(i+1, xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight + Display.sketch.height/60);
+        }
+        Display.sketch.text(String.format("%.2f", minEnergy), xOffset - Display.sketch.width/60, yOffset + displayHeight);
+        Display.sketch.text(String.format("%.2f", maxEnergy), xOffset - Display.sketch.width/60, yOffset);
+        Display.sketch.strokeWeight(1);
     }
 }
