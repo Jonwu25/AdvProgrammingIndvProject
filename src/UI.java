@@ -10,17 +10,27 @@ public class UI {
         this.sliders = sliders;
     }
 
-    public void display() {
+    public void display(boolean background) {
         if (Display.state.contains("tutorial")) {
-            for (Button b : tutorialButtons) {
+            if (!background) {
+                for (Button b : tutorialButtons) {
+                    b.display();
+                }
+            } else {
+                for (Button b : simulationButtons) {
+                    b.display();
+                }
+                for (Slider s : sliders) {
+                    s.display();
+                }
+            }
+        } else {
+            for (Button b : simulationButtons) {
                 b.display();
             }
-        }
-        for (Button b : simulationButtons) {
-            b.display();
-        }
-        for (Slider s : sliders) {
-            s.display();
+            for (Slider s : sliders) {
+                s.display();
+            }
         }
     }
 

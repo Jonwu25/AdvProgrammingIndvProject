@@ -8,6 +8,8 @@ public class Display extends PApplet {
     public static int tickSpeed;
     public static int oldTickSpeed;
     public static int genSpeed;
+    public static float mutationRate;
+    public static float mutationAmount;
     public static Environment env;
     public static UI ui;
     public static int frame;
@@ -39,9 +41,16 @@ public class Display extends PApplet {
         try {
             Field tickField = Display.class.getDeclaredField("tickSpeed");
             tickField.setAccessible(true);
+            Slider tickSlider = new Slider(1 - 1f/5 - 1f/10, 1f/10, 1f/5, 1f/25, 1, 10, tickField, "Tick Speed");
             Field stateField = Display.class.getDeclaredField("state");
             stateField.setAccessible(true);
-            sliders = new Slider[]{new Slider(1 - 1f/5 - 1f/10, 1f/10, 1f/5, 1f/25, 1, 10, tickField, "Tick Speed")};
+            Field mutationRateField = Display.class.getDeclaredField("mutationRate");
+            mutationRateField.setAccessible(true);
+            Slider mutationRateSlider = new Slider(1 - 1f/5 - 1f/10, 1f/10 + 2f/25, 1f/5, 1f/25, 0, 1, mutationRateField, "Mutation Rate");
+            Field mutationAmountField = Display.class.getDeclaredField("mutationAmount");
+            mutationAmountField.setAccessible(true);
+            Slider mutationAmountSlider = new Slider(1 - 1f/5 - 1f/10, 1f/10 + 4f/25, 1f/5, 1f/25, 0, 1, mutationAmountField, "Mutation Amount");
+            sliders = new Slider[]{tickSlider, mutationRateSlider, mutationAmountSlider};
         } catch (Exception e) {
             sliders = new Slider[0];
             e.printStackTrace();
@@ -77,7 +86,7 @@ public class Display extends PApplet {
             if (frame % tickSpeed == 0 && env != null) {
                 env.update();
                 if (frame % (tickSpeed * genSpeed) == 0) {
-                    env.nextGeneration();
+                    env.nextGeneration(mutationAmount, mutationRate);
                 }
             }
             env.moveUpdates(frame, tickSpeed);
@@ -85,9 +94,7 @@ public class Display extends PApplet {
         if (env != null) {
             env.display();
         }
-        if (!state.contains("tutorial")) {
-            ui.display();
-        }
+        ui.display(true);
         if (state.equals("0tutorial")) {
             fill(220);
             rect(width/4, height/4, width/2, height/2);
@@ -96,7 +103,7 @@ public class Display extends PApplet {
             textAlign(CENTER);
             text("Welcome to the Evolution Simulation!", width/2, height/2 - 30);
             text("This tutorial text will be updated after more features are added.", width/2, height/2);
-            ui.display();
+            ui.display(false);
         }
     }
 }

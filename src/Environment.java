@@ -57,7 +57,7 @@ public class Environment {
         }
     }
 
-    public void nextGeneration() {
+    public void nextGeneration(float mutationAmount, float mutationRate) {
         Random rand = new Random();
         creatures.sort(null);
         float en = 0;
@@ -70,7 +70,7 @@ public class Environment {
             for (int j = 0; j < 10; j++) {
                 Creature offspring = Creature.deepCopy(creatures.get(creatures.size() - 1 - i));
                 if (rand.nextFloat() < 0.5) {
-                    offspring.mutate();
+                    offspring.mutate(mutationAmount, mutationRate);
                 }
                 offspring.x = rand.nextInt(tiles.length);
                 offspring.y = rand.nextInt(tiles[0].length);

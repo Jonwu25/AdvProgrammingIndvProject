@@ -109,18 +109,18 @@ public class Creature implements Comparable<Creature> {
         return input;
     }
 
-    public void mutate() {
+    public void mutate(float mutationAmount, float mutationRate) {
         for (int i = 0; i < parameters.length; i++) {
             for (int j = 0; j < parameters[i].length; j++) {
                 for (int k = 0; k < parameters[i][j].length; k++) {
-                    if (Math.random() < 0.5) {
-                        parameters[i][j][k] += (Math.random() - 0.5) * 0.2;
+                    if (Math.random() < mutationRate) {
+                        parameters[i][j][k] += (Math.random() - 0.5) * mutationAmount;
                     }
                 }
             }
             for (int j = 0; j < weight[i].length; j++) {
-                if (Math.random() < 0.5) {
-                    weight[i][j] += (Math.random() - 0.5) * 0.2;
+                if (Math.random() < mutationRate) {
+                    weight[i][j] += (Math.random() - 0.5) * mutationAmount;
                 }
             }
         }
