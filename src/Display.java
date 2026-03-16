@@ -13,14 +13,17 @@ public class Display extends PApplet {
     public static Environment env;
     public static UI ui;
     public static int frame;
+    public static int genFrame;
     public static String state;
     public static boolean clicked;
     public static boolean clicking;
     public static void main(String[] args) {
         tickSpeed = 1;
         oldTickSpeed = tickSpeed;
-        genSpeed = 50;
+        genSpeed = 1;
         state = "0tutorial";
+        mutationRate = 0.1f;
+        mutationAmount = 0.1f;
         env = new Environment(80, 60);
         PApplet.main("Display");
     }
@@ -28,6 +31,7 @@ public class Display extends PApplet {
     @Override
     public void settings() {
         frame = 0;
+        genFrame = 0;
         fullScreen();
     }
 
@@ -83,10 +87,14 @@ public class Display extends PApplet {
         }
         if (state.equals("running")) {
             frame++;
+            genFrame++;
             if (frame % tickSpeed == 0 && env != null) {
                 env.update();
-                if (frame % (tickSpeed * genSpeed) == 0) {
-                    env.nextGeneration(mutationAmount, mutationRate);
+                if (genFrame % genSpeed == 0) {
+                    env.nextGeneration(mutationAmount, mutationRate, genSpeed);
+                    genFrame = 0;
+                    // genSpeed = 10 + env.avgEnergy.size()/5;
+                    genSpeed = 50;
                 }
             }
             env.moveUpdates(frame, tickSpeed);
@@ -105,5 +113,27 @@ public class Display extends PApplet {
             text("This tutorial text will be updated after more features are added.", width/2, height/2);
             ui.display(false);
         }
+    }
+
+    public static void goodText(String s, float x, float y, float textWidth, float textHeight) {
+        float left = 8;
+        float right = 100;
+        float tempSize = 54;
+        int numTimes = 100;
+        sketch.textSize(tempSize);
+        while ((sketch.textWidth(s) < 9*textWidth/10) || ((sketch.textAscent() + sketch.textDescent())*0.8 < 9*textHeight/10)
+                || (sketch.textWidth(s) > textWidth) || (sketch.textAscent() + sketch.textDescent())*0.8 > textHeight || (numTimes < 10)) {
+            if (sketch.textWidth(s) > textWidth || (sketch.textAscent() + sketch.textDescent())*0.8 > textHeight) {
+                // too big
+                right = tempSize;
+            } else {
+                // too small
+                left = tempSize;
+            }
+            tempSize = (left + right) / 2;
+            sketch.textSize(tempSize);
+            numTimes++;
+        }
+        sketch.text(s, x, y);
     }
 }

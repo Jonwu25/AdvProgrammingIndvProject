@@ -57,14 +57,14 @@ public class Environment {
         }
     }
 
-    public void nextGeneration(float mutationAmount, float mutationRate) {
+    public void nextGeneration(float mutationAmount, float mutationRate, int genSpeed) {
         Random rand = new Random();
         creatures.sort(null);
         float en = 0;
         for (Creature c : creatures) {
             en += c.energy;
         }
-        avgEnergy.add(en / creatures.size());
+        avgEnergy.add(en / creatures.size() / genSpeed);
         ArrayList<Creature> survivors = new ArrayList<Creature>();
         for (int i = 0; i < creatures.size() / 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -115,7 +115,7 @@ public class Environment {
         float yOffset = Display.sketch.height/2 + 4*Display.sketch.height/60;
         Display.sketch.textSize(16);
         Display.sketch.fill(0);
-        Display.sketch.text("Graph of Average Energy Over Generations", xOffset+displayWidth/2, yOffset-Display.sketch.height/60);
+        Display.sketch.text("Graph of Average Energy Per Step Over Generations", xOffset+displayWidth/2, yOffset-Display.sketch.height/60);
         Display.sketch.textSize(12);
         Display.sketch.text("Generations", xOffset+displayWidth/2, yOffset+displayHeight+Display.sketch.height/30);
         Display.sketch.stroke(0);
@@ -132,10 +132,14 @@ public class Environment {
             Display.sketch.line(xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight - (avgEnergy.get(i)-minEnergy) * (displayHeight)/(maxEnergy-minEnergy),
                             xOffset + (i + 1) * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight - (avgEnergy.get(i + 1)-minEnergy) * (displayHeight)/(maxEnergy-minEnergy));
         }
+        int b = 0;
         for (int i = 0; i < avgEnergy.size(); i++) {
             Display.sketch.textSize(10);
             Display.sketch.fill(0);
-            Display.sketch.text(i+1, xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight + Display.sketch.height/60);
+            if (30*i/avgEnergy.size() >= b) {
+                Display.sketch.text(i+1, xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight + Display.sketch.height/60);
+                b++;
+            }
         }
         Display.sketch.text(String.format("%.2f", minEnergy), xOffset - Display.sketch.width/60, yOffset + displayHeight);
         Display.sketch.text(String.format("%.2f", maxEnergy), xOffset - Display.sketch.width/60, yOffset);

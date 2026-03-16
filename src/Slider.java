@@ -130,7 +130,9 @@ public class Slider {
             Display.sketch.text(label, x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
             e.printStackTrace();
         }
-        Display.sketch.text(min, x*WIDTH, y*HEIGHT + height*HEIGHT*3/2);
-        Display.sketch.text(max, (x + width)*WIDTH, (y + height*3/2)*HEIGHT);
+        Display.goodText(min + "", x*WIDTH, (y+height*3/2)*HEIGHT, width*WIDTH/2, height*HEIGHT/2);
+        Display.goodText(max + "", (x + width)*WIDTH, (y+height*3/2)*HEIGHT, width*WIDTH/2, height*HEIGHT/2);
+        /*Display.sketch.text(min, x*WIDTH, y*HEIGHT + height*HEIGHT*3/2);
+        Display.sketch.text(max, (x + width)*WIDTH, (y + height*3/2)*HEIGHT);*/
     }
 }
