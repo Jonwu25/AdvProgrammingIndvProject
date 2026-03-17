@@ -119,10 +119,10 @@ public class Display extends PApplet {
         float left = 8;
         float right = 100;
         float tempSize = 54;
-        int numTimes = 100;
+        int numTimes = 0;
         sketch.textSize(tempSize);
-        while ((sketch.textWidth(s) < 9*textWidth/10) || ((sketch.textAscent() + sketch.textDescent())*0.8 < 9*textHeight/10)
-                || (sketch.textWidth(s) > textWidth) || (sketch.textAscent() + sketch.textDescent())*0.8 > textHeight || (numTimes < 10)) {
+        while (((sketch.textWidth(s) < 9*textWidth/10) || ((sketch.textAscent() + sketch.textDescent())*0.8 < 9*textHeight/10)
+                || (sketch.textWidth(s) > textWidth) || ((sketch.textAscent() + sketch.textDescent())*0.8 > textHeight)) && (numTimes < 10)) {
             if (sketch.textWidth(s) > textWidth || (sketch.textAscent() + sketch.textDescent())*0.8 > textHeight) {
                 // too big
                 right = tempSize;
