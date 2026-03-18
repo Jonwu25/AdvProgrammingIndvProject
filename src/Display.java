@@ -1,6 +1,4 @@
-import java.util.*;
 import processing.core.PApplet;
-import processing.core.PImage;
 import java.lang.reflect.Field;
 
 public class Display extends PApplet {

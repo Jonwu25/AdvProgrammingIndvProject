@@ -115,9 +115,9 @@ public class Slider {
         Display.sketch.rect((x+ratio*width)*WIDTH, y*HEIGHT, (1-ratio)*width*WIDTH, height*HEIGHT);
         Display.sketch.fill(124, 167, 235);
         Display.sketch.stroke(0);
-        Display.sketch.arc(x*WIDTH, (y+height/2)*HEIGHT, height*HEIGHT, height*HEIGHT, Display.sketch.PI/2, Display.sketch.PI*3/2);
+        Display.sketch.arc(x*WIDTH, (y+height/2)*HEIGHT, height*HEIGHT, height*HEIGHT, Display.PI/2, Display.PI*3/2);
         Display.sketch.fill(255);
-        Display.sketch.arc((x+width)*WIDTH, (y+height/2)*HEIGHT, height*HEIGHT, height*HEIGHT, -Display.sketch.PI*1/2, Display.sketch.PI/2);
+        Display.sketch.arc((x+width)*WIDTH, (y+height/2)*HEIGHT, height*HEIGHT, height*HEIGHT, -Display.PI*1/2, Display.PI/2);
         Display.sketch.line((x)*WIDTH, y*HEIGHT, (x+width)*WIDTH, (y)*HEIGHT);
         Display.sketch.line((x)*WIDTH, (y+height)*HEIGHT, (x+width)*WIDTH, (y+height)*HEIGHT);
         Display.sketch.fill(255);
