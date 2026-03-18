@@ -77,7 +77,7 @@ public class Slider {
             } else {
                 try {
                     if (value.getGenericType() == int.class) {
-                        value.setInt(null, (int)(min+(max-min)*(Display.sketch.mouseX-x*WIDTH)/(width*WIDTH)));
+                        value.setInt(null, Math.round(min+(max-min)*(Display.sketch.mouseX-x*WIDTH)/(width*WIDTH)));
                     } else if (value.getGenericType() == float.class) {
                         value.setFloat(null, min+(max-min)*(Display.sketch.mouseX-x*WIDTH)/(width*WIDTH));
                     } else {
@@ -125,14 +125,14 @@ public class Slider {
         Display.sketch.fill(0);
         Display.sketch.textSize(12);
         try {
-            Display.sketch.text(label + ": " + value.get(null), x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
+            Display.goodText(label + ": " + value.get(null), x*WIDTH + width*WIDTH/2, (y-0.5f*height)*HEIGHT, width*WIDTH, height*HEIGHT/2, "ct");
+            // Display.sketch.text(label + ": " + value.get(null), x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
         } catch (Exception e) {
-            Display.sketch.text(label, x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
+            Display.goodText(label, x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2, width*WIDTH, height*HEIGHT, "ct");
+            // Display.sketch.text(label, x*WIDTH + width*WIDTH/2, y*HEIGHT - height*HEIGHT/2);
             e.printStackTrace();
         }
-        Display.goodText(min + "", x*WIDTH, (y+height*3/2)*HEIGHT, width*WIDTH/2, height*HEIGHT/2);
-        Display.goodText(max + "", (x + width)*WIDTH, (y+height*3/2)*HEIGHT, width*WIDTH/2, height*HEIGHT/2);
-        /*Display.sketch.text(min, x*WIDTH, y*HEIGHT + height*HEIGHT*3/2);
-        Display.sketch.text(max, (x + width)*WIDTH, (y + height*3/2)*HEIGHT);*/
+        Display.goodText(min + "", x*WIDTH, (y+height*3/2)*HEIGHT, width*WIDTH/2, height*HEIGHT/2, "cb");
+        Display.goodText(max + "", (x + width)*WIDTH, (y+height*3/2)*HEIGHT, width*WIDTH/2, height*HEIGHT/2, "cb");
     }
 }

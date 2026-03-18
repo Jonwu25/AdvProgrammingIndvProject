@@ -17,6 +17,7 @@ public class Display extends PApplet {
     public static String state;
     public static boolean clicked;
     public static boolean clicking;
+    public static int minWidth, minHeight;
     public static void main(String[] args) {
         tickSpeed = 1;
         oldTickSpeed = tickSpeed;
@@ -32,15 +33,17 @@ public class Display extends PApplet {
     public void settings() {
         frame = 0;
         genFrame = 0;
-        fullScreen();
+        // fullScreen();
     }
 
     @Override
     public void setup() {
         sketch = this;
         background(255);
-        // surface.setResizable(true);
-        // frameRate(10);
+        surface.setResizable(true);
+        // frameRate(120);
+        minHeight = 560;
+        minWidth = 930;
         Slider[] sliders;
         try {
             Field tickField = Display.class.getDeclaredField("tickSpeed");
@@ -108,22 +111,28 @@ public class Display extends PApplet {
             rect(width/4, height/4, width/2, height/2);
             fill(0);
             textSize(20);
-            textAlign(CENTER);
-            text("Welcome to the Evolution Simulation!", width/2, height/2 - 30);
-            text("This tutorial text will be updated after more features are added.", width/2, height/2);
+            //textAlign(CENTER);
+            goodText("Welcome to the Evolution Simulation!", width/2, height/2 - height/10, width/2, height/10, "cb");
+            goodText("This tutorial text will be updated after more features are added.", width/2, height/2, width/2, height/10, "cb");
+            //text("Welcome to the Evolution Simulation!", width/2, height/2 - 30);
+            //text("This tutorial text will be updated after more features are added.", width/2, height/2);
             ui.display(false);
+        }
+        if (width < minWidth || height < minHeight) {
+            surface.setSize(Math.max(width, minWidth), Math.max(height, minHeight));
         }
     }
 
-    public static void goodText(String s, float x, float y, float textWidth, float textHeight) {
-        float left = 8;
+    public static void goodText(String s, float x, float y, float textWidth, float textHeight, String align) {
+        float left = 0;
         float right = 100;
-        float tempSize = 54;
+        float tempSize = 50;
         int numTimes = 0;
+        float scalar = 0.8f;
         sketch.textSize(tempSize);
-        while (((sketch.textWidth(s) < 9*textWidth/10) || ((sketch.textAscent() + sketch.textDescent())*0.8 < 9*textHeight/10)
-                || (sketch.textWidth(s) > textWidth) || ((sketch.textAscent() + sketch.textDescent())*0.8 > textHeight)) && (numTimes < 10)) {
-            if (sketch.textWidth(s) > textWidth || (sketch.textAscent() + sketch.textDescent())*0.8 > textHeight) {
+        while (((sketch.textWidth(s) < 9*textWidth/10) || ((sketch.textAscent() + sketch.textDescent())*scalar < 9*textHeight/10)
+                || (sketch.textWidth(s) > textWidth) || ((sketch.textAscent() + sketch.textDescent())*scalar > textHeight)) && (numTimes < 10)) {
+            if (sketch.textWidth(s) > textWidth || (sketch.textAscent() + sketch.textDescent())*scalar > textHeight) {
                 // too big
                 right = tempSize;
             } else {
@@ -134,6 +143,36 @@ public class Display extends PApplet {
             sketch.textSize(tempSize);
             numTimes++;
         }
+        // Left, Center, Right
+        // Top, Center, Baseline
+        int alignHorizontal, alignVertical;
+        switch(align.charAt(0)) {
+            case 'c':
+                alignHorizontal = CENTER;
+                break;
+            case 'l':
+                alignHorizontal = LEFT;
+                break;
+            case 'r':
+                alignHorizontal = RIGHT;
+                break;
+            default:
+                alignHorizontal = CENTER;
+        }
+        switch(align.charAt(1)) {
+            case 'c':
+                alignVertical = CENTER;
+                break;
+            case 't':
+                alignVertical = TOP;
+                break;
+            case 'b':
+                alignVertical = BASELINE;
+                break;
+            default:
+                alignVertical = CENTER;
+        }
+        sketch.textAlign(alignHorizontal, alignVertical);
         sketch.text(s, x, y);
     }
 }

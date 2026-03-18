@@ -89,6 +89,7 @@ public class Environment {
         float sidelength = Math.min(displayWidth/tiles.length, displayHeight/tiles[0].length);
         float xOffset = Display.sketch.width/4 - (float) tiles.length/2 * sidelength;
         float yOffset = Display.sketch.height/2 - (float) tiles[0].length/2 * sidelength;
+        Display.sketch.strokeWeight(sidelength/50);
         for (int y = 0; y < tiles[0].length; y++) {
             for (int x = 0; x < tiles.length; x++) {
                 int[] color = colors.get(tiles[x][y]);
@@ -113,11 +114,9 @@ public class Environment {
         float displayHeight = Display.sketch.height/2 - Display.sketch.height/10;
         float xOffset = Display.sketch.width/2 + Display.sketch.width/60;
         float yOffset = Display.sketch.height/2 + 4*Display.sketch.height/60;
-        Display.sketch.textSize(16);
         Display.sketch.fill(0);
-        Display.sketch.text("Graph of Average Energy Per Step Over Generations", xOffset+displayWidth/2, yOffset-Display.sketch.height/60);
-        Display.sketch.textSize(12);
-        Display.sketch.text("Generations", xOffset+displayWidth/2, yOffset+displayHeight+Display.sketch.height/30);
+        Display.goodText("Graph of Average Energy Per Step Over Generations", xOffset+displayWidth/2, yOffset-Display.sketch.height/60, displayWidth, Display.sketch.height/30, "cb");
+        Display.goodText("Generations", xOffset+displayWidth/2, yOffset+displayHeight+Display.sketch.height/30, displayWidth, Display.sketch.height/60, "cb");
         Display.sketch.stroke(0);
         Display.sketch.strokeWeight(2);
         Display.sketch.fill(255);
@@ -134,15 +133,14 @@ public class Environment {
         }
         int b = 0;
         for (int i = 0; i < avgEnergy.size(); i++) {
-            Display.sketch.textSize(10);
             Display.sketch.fill(0);
             if (30*i/avgEnergy.size() >= b) {
-                Display.sketch.text(i+1, xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight + Display.sketch.height/60);
+                Display.goodText(String.valueOf(i+1), xOffset + i * displayWidth/(avgEnergy.size() - 1), yOffset + displayHeight + Display.sketch.height/60, displayWidth/(avgEnergy.size() - 1), Display.sketch.height/60, "cb");
                 b++;
             }
         }
-        Display.sketch.text(String.format("%.2f", minEnergy), xOffset - Display.sketch.width/60, yOffset + displayHeight);
-        Display.sketch.text(String.format("%.2f", maxEnergy), xOffset - Display.sketch.width/60, yOffset);
+        Display.goodText(String.format("%.2f", minEnergy), xOffset - Display.sketch.width/60, yOffset + displayHeight, Display.sketch.width/60, Display.sketch.height/60, "cl");
+        Display.goodText(String.format("%.2f", maxEnergy), xOffset - Display.sketch.width/60, yOffset, Display.sketch.width/60, Display.sketch.height/60, "cl");
         Display.sketch.strokeWeight(1);
     }
 }

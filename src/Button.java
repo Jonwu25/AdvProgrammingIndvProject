@@ -40,7 +40,8 @@ public class Button {
         }
         Display.sketch.rect(x*WIDTH, y*HEIGHT, width*WIDTH, height*HEIGHT);
         Display.sketch.fill(0);
-        Display.sketch.textAlign(Display.sketch.CENTER, Display.sketch.CENTER);
+        //Display.sketch.textAlign(Display.sketch.CENTER, Display.sketch.CENTER);
+        Display.goodText(label, (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT, width*WIDTH, height*HEIGHT, "cc");
         Display.sketch.text(label, (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT);
     }
 }
