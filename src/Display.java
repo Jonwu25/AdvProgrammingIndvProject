@@ -147,7 +147,7 @@ public class Display extends PApplet {
             numTimes++;
         }
         // Left, Center, Right
-        // Top, Center, Baseline
+        // Top, Center, Bottom
         int alignHorizontal, alignVertical;
         switch(align.charAt(0)) {
             case 'c':
@@ -170,7 +170,7 @@ public class Display extends PApplet {
                 alignVertical = TOP;
                 break;
             case 'b':
-                alignVertical = BASELINE;
+                alignVertical = BOTTOM;
                 break;
             default:
                 alignVertical = CENTER;
