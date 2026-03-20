@@ -3,7 +3,9 @@ import java.util.*;
 public class Environment {
     int[][] tiles;
     HashMap<Integer, int[]> colors = new HashMap<Integer, int[]>();
-    int tick;
+    int[][] in;
+    int[][] moves;
+    int width, height;
     ArrayList<Creature> creatures;
     ArrayList<Float> avgEnergy;
 
@@ -23,13 +25,14 @@ public class Environment {
                 }
             }
         }
-        tick = 0;
+        this.width = width;
+        this.height = height;
         creatures = new ArrayList<Creature>();
         colors.put(0, new int[]{0, 0, 255});
         colors.put(1, new int[]{0, 255, 0});
         colors.put(-1, new int[]{255, 0, 0});
-        int[][] in = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {0, 0}};
-        int[][] moves = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        in = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {0, 0}};
+        moves = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
         // Place initial creatures
         for (int i = 0; i < 300; i++) {
             Creature c = new Creature(1.0f, new int[]{4, 4}, in, moves, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
@@ -40,7 +43,6 @@ public class Environment {
     }
 
     public void update() {
-        tick++;
         // Update logic for environment and creatures goes here
         for (Creature c : creatures) {
             c.update(this);
@@ -107,6 +109,17 @@ public class Environment {
         // energy graph
 
        displayEnergyGraph();
+    }
+
+    public void reset() {
+        Random rand = new Random();
+        creatures = new ArrayList<Creature>();
+        for (int i = 0; i < 300; i++) {
+            Creature c = new Creature(1.0f, new int[]{4, 4}, in, moves, 0, rand.nextInt(width), rand.nextInt(height), 4, 4);
+            c.setMethods();
+            creatures.add(c);
+        }
+        avgEnergy = new ArrayList<Float>();
     }
 
     public void displayEnergyGraph() {
