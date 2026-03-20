@@ -1,5 +1,6 @@
 import processing.core.PApplet;
 import java.lang.reflect.Field;
+import java.util.*;
 
 public class Display extends PApplet {
     public static PApplet sketch;
@@ -60,8 +61,8 @@ public class Display extends PApplet {
             sliders = new Slider[0];
             e.printStackTrace();
         }
-        Button[] tutorialButtons = new Button[]{new Button(1f/2 - 1f/60, 1f/2 + 1f/10 - 1f/60, 1f/30, 1f/30, "Next", () -> state = "running")};
-        Button[] simulationButtons = new Button[]{new Button(1f - 1f/100 - 1f/30, 1f/100, 1f/30, 1f/30, "Pause", () -> {
+        Button[] tutorialButtons = new Button[]{new Button(1f/2 - 1f/60, 1f/2 + 1f/10 - 1f/60, 1f/30, 1f/30, new ArrayList<>(Arrays.asList("Next")), () -> state = "running")};
+        Button[] simulationButtons = new Button[]{new Button(1f - 1f/100 - 1f/30, 1f/100, 1f/30, 1f/30, new ArrayList<>(Arrays.asList("Pause", "Play")), () -> {
             if (state.equals("running")) {
                 state = "paused";
             } else {
