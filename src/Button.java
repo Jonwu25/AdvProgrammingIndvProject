@@ -1,16 +1,20 @@
+import java.util.*;
+
 public class Button {
     float x, y, width, height; // All relative to screen size (0-1)
+    int labelNum;
     boolean hovered;
-    String label;
+    ArrayList<String> label;
     Runnable onClick;
 
-    public Button(float x, float y, float width, float height, String label, Runnable onClick) {
+    public Button(float x, float y, float width, float height, ArrayList<String> label, Runnable onClick) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.label = label;
         this.onClick = onClick;
+        this.labelNum=0;
     }
 
     public void checkHover() {
@@ -27,6 +31,8 @@ public class Button {
         checkHover();
         if (hovered && Display.clicked) {
             onClick.run();
+            labelNum++;
+            labelNum%=label.size();
         }
     }
 
@@ -41,7 +47,7 @@ public class Button {
         Display.sketch.rect(x*WIDTH, y*HEIGHT, width*WIDTH, height*HEIGHT);
         Display.sketch.fill(0);
         //Display.sketch.textAlign(Display.sketch.CENTER, Display.sketch.CENTER);
-        Display.goodText(label, (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT, width*WIDTH, height*HEIGHT, "cc");
-        Display.sketch.text(label, (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT);
+        Display.goodText(label.get(labelNum), (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT, width*WIDTH, height*HEIGHT, "cc");
+        Display.sketch.text(label.get(labelNum), (x + width / 2)*WIDTH, (y + height / 2)*HEIGHT);
     }
 }
