@@ -68,10 +68,10 @@ public class Display extends PApplet {
             } else {
                 state = "running";
             }
-        }), new Button(1f - 1f/100 - 1f/30, 1f/100+2f/30, 1f/30, 1f/30, "Reset", () -> {
+        }), new Button(1f - 1f/100 - 1f/30, 1f/100+2f/30, 1f/30, 1f/30, new ArrayList<>(Arrays.asList("Reset")), () -> {
             env.reset();
             frame = 0;
-            
+
         })};
         ui = new UI(tutorialButtons, simulationButtons, sliders);
     }
