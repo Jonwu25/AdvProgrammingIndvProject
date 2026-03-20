@@ -122,7 +122,7 @@ public class Display extends PApplet {
             ui.display(false);
         }
         if (width < minWidth || height < minHeight) {
-            surface.setSize(Math.max(width, minWidth), Math.max(height, minHeight));
+            //surface.setSize(Math.max(width, minWidth), Math.max(height, minHeight));
         }
     }
 
