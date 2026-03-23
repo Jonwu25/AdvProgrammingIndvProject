@@ -23,7 +23,6 @@ public class Environment {
                 } else {
                     tiles[x][y] = -1;
                 }
-                tiles[x][y] = (2f*x)/width - 1;
             }
         }
         this.width = width;
@@ -199,5 +198,27 @@ public class Environment {
         Display.goodText(String.format("%.2f", minEnergy), xOffset - Display.sketch.width/60, yOffset + displayHeight, Display.sketch.width/60, Display.sketch.height/60, "cl");
         Display.goodText(String.format("%.2f", maxEnergy), xOffset - Display.sketch.width/60, yOffset, Display.sketch.width/60, Display.sketch.height/60, "cl");
         Display.sketch.strokeWeight(1);
+    }
+
+    public void setDefault(int version) {
+        if (version == 1) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (x < width/3) {
+                        tiles[x][y] = 1;
+                    } else if (x < 2*width/3) {
+                        tiles[x][y] = 0;
+                    } else {
+                        tiles[x][y] = -1;
+                    }
+                }
+            }
+        } else if (version == 2) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    tiles[x][y] = (2f*x)/width - 1;
+                }
+            }
+        }
     }
 }

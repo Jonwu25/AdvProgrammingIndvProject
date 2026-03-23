@@ -71,7 +71,14 @@ public class Display extends PApplet {
         }), new Button(1f - 1f/100 - 1f/30, 1f/100+2f/30, 1f/30, 1f/30, new ArrayList<>(Arrays.asList("Reset")), () -> {
             env.reset();
             frame = 0;
-
+        }), new Button(1f - 1f/100 - 1f/30, 1f/199+4f/30, 1f/30, 1f/30, new ArrayList<>(Arrays.asList("Def1")), () -> {
+            env.reset();
+            frame = 0;
+            env.setDefault(1);
+        }), new Button(1f - 1f/100 - 1f/30, 1f/199+6f/30, 1f/30, 1f/30, new ArrayList<>(Arrays.asList("Def2")), () -> {
+            env.reset();
+            frame = 0;
+            env.setDefault(2);
         })};
         ui = new UI(tutorialButtons, simulationButtons, sliders);
     }
