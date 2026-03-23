@@ -216,7 +216,7 @@ public class Environment {
         } else if (version == 2) {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    tiles[x][y] = (2f*x)/width - 1;
+                    tiles[x][y] = (float) Math.sin((x-width/2f)/width * 2f*Math.PI);
                 }
             }
         }
