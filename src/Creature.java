@@ -228,13 +228,14 @@ public class Creature implements Comparable<Creature> {
 
     public void update(Environment e) {
         ai(e);
-        if (e.tiles[x][y] == 1) {
-            energy += 1;
-        } else if (e.tiles[x][y] == 2) {
-            energy -= 1;
-        } else if (e.tiles[x][y] == 0) {
-            energy -= 0.1;
-        }
+        // if (e.tiles[x][y] == 1f) {
+        //     energy += 1;
+        // } else if (e.tiles[x][y] == 2f) {
+        //     energy -= 1;
+        // } else if (e.tiles[x][y] == 0f) {
+        //     energy -= 0.1;
+        // }
+        energy += e.getTile(x, y);
     }
 
     public void moveUpdate(int frame, int tickSpeed) {
