@@ -100,9 +100,9 @@ public class Display extends PApplet {
         }
         if (state.equals("running")) {
             frame++;
-            genFrame++;
             if (frame % tickSpeed == 0 && env != null) {
                 env.update();
+                genFrame++;
                 if (genFrame % genSpeed == 0) {
                     env.nextGeneration(mutationAmount, mutationRate, genSpeed);
                     genFrame = 0;

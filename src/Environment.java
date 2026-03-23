@@ -71,11 +71,10 @@ public class Environment {
         for (int i = 0; i < creatures.size() / 10; i++) {
             for (int j = 0; j < 10; j++) {
                 Creature offspring = Creature.deepCopy(creatures.get(creatures.size() - 1 - i));
-                if (rand.nextFloat() < 0.5) {
-                    offspring.mutate(mutationAmount, mutationRate);
-                }
+                offspring.mutate(mutationAmount, mutationRate);
                 offspring.x = rand.nextInt(tiles.length);
                 offspring.y = rand.nextInt(tiles[0].length);
+                offspring.setStart(offspring.x, offspring.y);
                 offspring.resetEnergy();
                 survivors.add(offspring);
             }
@@ -94,50 +93,7 @@ public class Environment {
         Display.sketch.strokeWeight(sidelength/50);
         for (int y = 0; y < tiles[0].length; y++) {
             for (int x = 0; x < tiles.length; x++) {
-                int[] color = new int[3];
-                ArrayList<Integer> keys = new ArrayList<>(colors.keySet());
-                Collections.sort(keys);
-                if (tiles[x][y] % 1==0f && keys.contains((int) tiles[x][y])) {
-                    color = colors.get((int) tiles[x][y]);
-                } else {
-                    // finding desired key (Binary search)
-
-                    int desiredKey = 0;
-                    int leftIndex = 0;
-                    int rightIndex = keys.size();
-                    while (leftIndex+1!=rightIndex) {
-                        desiredKey = (leftIndex+rightIndex)/2;
-                        if (keys.get(desiredKey) < tiles[x][y]) {
-                            leftIndex = desiredKey;
-                        } else {
-                            rightIndex = desiredKey;
-                        }
-                    }
-                    desiredKey = leftIndex;
-                    if (tiles[x][y] < keys.get(0)) {
-                        desiredKey = -1;
-                    } else if (tiles[x][y] > keys.get(keys.size()-1)) {
-                        desiredKey = keys.size() - 1;
-                    }
-
-                    // using desired key
-
-                    if (desiredKey == -1) {
-                        color = colors.get(keys.get(0));
-                    } else if (desiredKey == keys.size() - 1) {
-                        color = colors.get(keys.get(keys.size() - 1));
-                    } else {
-                        int left = keys.get(desiredKey);
-                        int right = keys.get(desiredKey+1);
-                        int[] colorLeft = colors.get(left);
-                        int[] colorRight = colors.get(right);
-                        float ratio = (tiles[x][y] - left)/((float) right-left);
-                        color = new int[] {(int) ((1f-ratio)*colorLeft[0]+ratio*colorRight[0]),
-                                        (int) ((1f-ratio)*colorLeft[1]+ratio*colorRight[1]),
-                                        (int) ((1f-ratio)*colorLeft[2]+ratio*colorRight[2])};
-
-                    }
-                }
+                int[] color = getColor(tiles[x][y]);
                 Display.sketch.fill(color[0], color[1], color[2]);
                 Display.sketch.rect(x * sidelength + xOffset, y * sidelength + yOffset, sidelength, sidelength);
             }
@@ -146,12 +102,59 @@ public class Environment {
         // creatures
 
         for (Creature c : creatures) {
-            c.display(xOffset, yOffset, sidelength, tiles.length, tiles[0].length);
+            c.display(xOffset, yOffset, sidelength, tiles.length, tiles[0].length, this);
         }
 
         // energy graph
 
        displayEnergyGraph();
+    }
+
+    public int[] getColor(float val) {
+        int[] color = new int[3];
+        ArrayList<Integer> keys = new ArrayList<>(colors.keySet());
+        Collections.sort(keys);
+        if (val % 1==0f && keys.contains((int) val)) {
+            color = colors.get((int) val);
+        } else {
+            // finding desired key (Binary search)
+
+            int desiredKey = 0;
+            int leftIndex = 0;
+            int rightIndex = keys.size();
+            while (leftIndex+1!=rightIndex) {
+                desiredKey = (leftIndex+rightIndex)/2;
+                if (keys.get(desiredKey) < val) {
+                    leftIndex = desiredKey;
+                } else {
+                    rightIndex = desiredKey;
+                }
+            }
+            desiredKey = leftIndex;
+            if (val < keys.get(0)) {
+                desiredKey = -1;
+            } else if (val > keys.get(keys.size()-1)) {
+                desiredKey = keys.size() - 1;
+            }
+
+            // using desired key
+
+            if (desiredKey == -1) {
+                color = colors.get(keys.get(0));
+            } else if (desiredKey == keys.size() - 1) {
+                color = colors.get(keys.get(keys.size() - 1));
+            } else {
+                int left = keys.get(desiredKey);
+                int right = keys.get(desiredKey+1);
+                int[] colorLeft = colors.get(left);
+                int[] colorRight = colors.get(right);
+                float ratio = (val - left)/((float) right-left);
+                color = new int[] {(int) ((1f-ratio)*colorLeft[0]+ratio*colorRight[0]),
+                                (int) ((1f-ratio)*colorLeft[1]+ratio*colorRight[1]),
+                                (int) ((1f-ratio)*colorLeft[2]+ratio*colorRight[2])};
+            }
+        }
+        return color;
     }
 
     public void reset() {

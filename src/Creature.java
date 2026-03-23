@@ -18,6 +18,14 @@ public class Creature implements Comparable<Creature> {
 
     public Creature(float speed, int[] numLayers, int[][] in, int[][] out, float energy, int x, int y, int width, int height) {
         this.speed = speed;
+        this.energy = energy;
+        this.x = x;
+        this.y = y;
+        this.startX = x;
+        this.startY = y;
+        this.width = width;
+        this.height = height;
+        this.numLayers = numLayers;
         // Randomly initialize parameters and weights
         // First array in parameters has dimensions numLayers[0] x (input dimension)
         // Second has dimensions numLayers[1] x numLayers[0], etc.
@@ -50,14 +58,6 @@ public class Creature implements Comparable<Creature> {
                 weight[i][j] = rand.nextFloat() * 4 - 2;
             }
         }
-        this.energy = energy;
-        this.startX = x;
-        this.startY = y;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.numLayers = numLayers;
     }
 
     public void setMethods() {
@@ -150,8 +150,14 @@ public class Creature implements Comparable<Creature> {
         vely = dy;
     }
 
-    public void display(float xOffset, float yOffset, float sidelength, int width, int height) {
-        Display.sketch.fill(0, 0, 0);
+    public void changeColor(Environment env) {
+        int[] color = env.getColor(energy);
+        Display.sketch.fill((2*color[0])/3, (2*color[1])/3, (2*color[2])/3);
+    }
+
+    public void display(float xOffset, float yOffset, float sidelength, int width, int height, Environment env) {
+        changeColor(env);
+        Display.sketch.strokeWeight(sidelength/50);
         Display.sketch.ellipse(displayX * sidelength + xOffset + sidelength/2, displayY * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
         if (displayX > width - 1) {
             Display.sketch.ellipse((displayX - width) * sidelength + xOffset + sidelength/2, displayY * sidelength + yOffset + sidelength/2, sidelength*4/5, sidelength*4/5);
@@ -242,5 +248,10 @@ public class Creature implements Comparable<Creature> {
         float ratio = (frame % tickSpeed) / (float) tickSpeed;
         displayX = ratio * velx + oldX;
         displayY = ratio * vely + oldY;
+    }
+
+    public void setStart(int startX, int startY) {
+        this.startX = startX;
+        this.startY = startY;
     }
 }
