@@ -12,16 +12,16 @@ public class Environment {
     public Environment(int width, int height) {
         tiles = new float[width][height];
         Random rand = new Random();
-        // Create random environment
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                float r = rand.nextFloat();
-                if (x < width/3) {
+                if (x < width/4) {
                     tiles[x][y] = 1;
-                } else if (x < 2*width/3) {
+                } else if (x < width/2) {
                     tiles[x][y] = 0;
-                } else {
+                } else if (x < 3*width/4) {
                     tiles[x][y] = -1;
+                } else {
+                    tiles[x][y] = 0;
                 }
             }
         }
@@ -207,12 +207,14 @@ public class Environment {
         if (version == 1) {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    if (x < width/3) {
+                    if (x < width/4) {
                         tiles[x][y] = 1;
-                    } else if (x < 2*width/3) {
+                    } else if (x < width/2) {
                         tiles[x][y] = 0;
-                    } else {
+                    } else if (x < 3*width/4) {
                         tiles[x][y] = -1;
+                    } else {
+                        tiles[x][y] = 0;
                     }
                 }
             }

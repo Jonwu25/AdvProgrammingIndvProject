@@ -15,6 +15,8 @@ public class Creature implements Comparable<Creature> {
     int width, height;
     int startX, startY;
     int[] numLayers;
+    int numMoves;
+    Environment env;
 
     public Creature(float speed, int[] numLayers, int[][] in, int[][] out, float energy, int x, int y, int width, int height) {
         this.speed = speed;
@@ -26,6 +28,7 @@ public class Creature implements Comparable<Creature> {
         this.width = width;
         this.height = height;
         this.numLayers = numLayers;
+        numMoves = 0;
         // Randomly initialize parameters and weights
         // First array in parameters has dimensions numLayers[0] x (input dimension)
         // Second has dimensions numLayers[1] x numLayers[0], etc.
@@ -141,6 +144,7 @@ public class Creature implements Comparable<Creature> {
         oldX = x;
         oldY = y;
         move(inputs[largest][0], inputs[largest][1], e);
+        env = e;
     }
 
     public void move(int dx, int dy, Environment e) {
@@ -148,6 +152,7 @@ public class Creature implements Comparable<Creature> {
         y = (y+dy + e.tiles[0].length) % e.tiles[0].length;
         velx = dx;
         vely = dy;
+        numMoves++;
     }
 
     public void changeColor(Environment env) {
@@ -229,7 +234,9 @@ public class Creature implements Comparable<Creature> {
         // +1f*(float)(Math.abs(this.x - this.startX) + Math.abs(this.y - this.startY))
         // +1f*(float)(Math.abs(other.x - other.startX) + Math.abs(other.y - other.startY))
         // Add above to encourage exploration, but for now just use energy
-        return Float.compare(this.energy, other.energy);
+
+        // Second part is for balancing
+        return Float.compare(this.energy - numMoves*env.getTile(this.startX, this.startY)/2, other.energy - other.numMoves*env.getTile(other.startX, other.startY)/2);
     }
 
     public void update(Environment e) {
