@@ -123,13 +123,10 @@ public class Display extends PApplet {
             textSize(20);
             //textAlign(CENTER);
             goodText("Welcome to the Evolution Simulation!", width/2, height/2 - height/10, width/2, height/10, "cb");
-            goodText("This tutorial text will be updated after more features are added.", width/2, height/2, width/2, height/10, "cb");
-            //text("Welcome to the Evolution Simulation!", width/2, height/2 - 30);
-            //text("This tutorial text will be updated after more features are added.", width/2, height/2);
             ui.display(false);
         }
         if (width < minWidth || height < minHeight) {
-            //surface.setSize(Math.max(width, minWidth), Math.max(height, minHeight));
+            surface.setSize(Math.max(width, minWidth), Math.max(height, minHeight));
         }
     }
 
